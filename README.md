@@ -3,4 +3,4 @@
 Extracted app repo for `iran-intel.aixbt.sh`.
 
 - shared UI package: `@aixbt-agent/components`
-- deployment workflow: `.github/workflows/deploy-service.yml`
+- deploys are triggered by the control-plane with direct Railway deploys
