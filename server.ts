@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { addDataRoute } from './server/addDataRoute.js'
+import { addDataRoute } from '@aixbt-agent/runtime'
 import { getCommodityQuotes } from './server/providers/cnbc.js'
 import { getQuotes } from './server/providers/yahoo-finance.js'
 import { getSpotPrices } from './server/providers/coinbase.js'
