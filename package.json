@@ -21,7 +21,6 @@
   },
   "homepage": "https://github.com/aixbt-agent/app-iran-intel#readme",
   "dependencies": {
-    "@aixbt-agent/runtime": "github:aixbt/agent",
     "d3-selection": "^3.0.0",
     "express": "^5.1.0",
     "lucide-react": "^0.577.0",
