@@ -1,5 +1,6 @@
 {
   "name": "Iran Intel",
+  "subdomain": "iran-intel",
   "type": "ssr",
   "startCommand": "npm start",
   "port": 3101,
