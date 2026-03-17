@@ -1,0 +1,10 @@
+{
+  "crons": [
+    {
+      "id": "iran-morning",
+      "schedule": "0 9 * * 1-5",
+      "queue": "invoke",
+      "prompt": "generate daily Iran market opening summary for the iran-intel app and update the sk_iran_intel actors, situation_briefing, timeline_events, scenarios, and trade_ideas tables with the refreshed output"
+    }
+  ]
+}
