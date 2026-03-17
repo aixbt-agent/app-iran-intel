@@ -29,18 +29,16 @@ function normalizeBaseUrl(value: string | undefined, protocol: 'http' | 'https')
 
 export function getDataApiBase(): string {
   const explicit = normalizeBaseUrl(process.env.DATA_API, process.env.NODE_ENV === 'production' ? 'https' : 'http')
-  if (explicit) {
-    return explicit
+  if (!explicit) {
+    throw new Error('DATA_API is required')
   }
 
-  const api = normalizeBaseUrl(process.env.API_URL, 'https')
-  if (api) {
-    return api
-  }
+  return explicit
+}
 
-  return process.env.NODE_ENV === 'production'
-    ? 'http://proxy.railway.internal:3000'
-    : 'http://localhost:3000'
+function buildDataApiHeaders(): HeadersInit | undefined {
+  const token = process.env.DATA_API_TOKEN?.trim()
+  return token ? { 'x-data-api-token': token } : undefined
 }
 
 function getDataRouteBase(namespace: string): string {
@@ -54,7 +52,7 @@ export function createDataRouteHandler(namespace: string) {
     try {
       const qs = new URLSearchParams(req.query as Record<string, string>).toString()
       const url = `${base}/${req.params.table}${qs ? `?${qs}` : ''}`
-      const r = await fetch(url)
+      const r = await fetch(url, { headers: buildDataApiHeaders() })
       const data = await readJson(r)
 
       if (!r.ok) {
