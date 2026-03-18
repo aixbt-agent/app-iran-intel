@@ -271,7 +271,7 @@ function MapTab({ actors }: { actors: ActorRow[] | null }) {
 // --- Tab content components ---
 
 function TimelineTab({ briefing }: { briefing: BriefingRow | null }) {
-  const { data } = useFetch<TimelineEvent[]>('/api/data/timeline_events?limit=500')
+  const { data } = useFetch<TimelineEvent[]>('/api/data/timeline_events?limit=500&order_by=event_time&order=desc')
 
   const events = (data || []).map(e => ({
     id: e.id,
