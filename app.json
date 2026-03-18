@@ -1,9 +1,0 @@
-{
-  "name": "Iran Intel",
-  "subdomain": "iran-intel",
-  "type": "ssr",
-  "startCommand": "npm start",
-  "port": 3101,
-  "serviceSlug": "app-iran-intel",
-  "repository": "aixbt-agent/app-iran-intel"
-}
