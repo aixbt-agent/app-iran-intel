@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { addDataRoute } from './server/runtime/dataRoute.js'
+import { createAppData } from '@aixbt-agent/runtime'
 import { getCommodityQuotes } from './server/providers/cnbc.js'
 import { getQuotes } from './server/providers/yahoo-finance.js'
 import { getSpotPrices } from './server/providers/coinbase.js'
@@ -9,8 +9,9 @@ import { getSpotPrices } from './server/providers/coinbase.js'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
 const port = parseInt(process.env.PORT || '3101')
+const data = createAppData('iran-intel')
 
-addDataRoute(app, 'iran-intel')
+data.mount(app)
 
 let cache: { data: any; expires: number } | null = null
 
