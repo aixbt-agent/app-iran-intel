@@ -2,7 +2,10 @@
   "name": "iran-intel",
   "displayName": "Iran Intel",
   "description": "Tracks Iran-linked macro, commodities, equities, and crypto risk signals.",
-  "aixbt": { "type": "ssr", "port": 3101 },
+  "aixbt": {
+    "type": "ssr",
+    "port": 3101
+  },
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -23,7 +26,8 @@
   },
   "homepage": "https://github.com/aixbt-agent/app-iran-intel#readme",
   "dependencies": {
-    "@aixbt-agent/runtime": "git+https://github.com/aixbt-agent/runtime.git#main",
+    "@aixbt-agent/components": "git+https://github.com/aixbt-agent/components.git#main",
+    "@aixbt-agent/runtime": "github:aixbt-agent/runtime#main",
     "d3-selection": "^3.0.0",
     "express": "^5.1.0",
     "lucide-react": "^0.577.0",
@@ -31,7 +35,6 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-simple-maps": "^3.0.0",
-    "@aixbt-agent/components": "git+https://github.com/aixbt-agent/components.git#main",
     "tsx": "^4.21.0"
   },
   "devDependencies": {
