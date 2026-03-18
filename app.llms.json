@@ -1,0 +1,31 @@
+{
+  "title": "Iran Intel",
+  "description": "Tracks Iran-linked macro, commodities, equities, and crypto risk signals.",
+  "sources": [
+    {
+      "type": "table",
+      "table": "timeline_events",
+      "query": {
+        "limit": 500,
+        "order_by": "event_time",
+        "order": "desc"
+      }
+    },
+    {
+      "type": "table",
+      "table": "scenarios"
+    },
+    {
+      "type": "table",
+      "table": "trade_ideas"
+    },
+    {
+      "type": "table",
+      "table": "actors"
+    },
+    {
+      "type": "table",
+      "table": "situation_briefing"
+    }
+  ]
+}
