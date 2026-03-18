@@ -2,7 +2,7 @@
   "name": "iran-intel",
   "displayName": "Iran Intel",
   "description": "Tracks Iran-linked macro, commodities, equities, and crypto risk signals.",
-  "aixbt": { "type": "ssr", "port": 3101, "internalUrl": "http://app-iran-intel.railway.internal:8080" },
+  "aixbt": { "type": "ssr", "port": 3101 },
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
