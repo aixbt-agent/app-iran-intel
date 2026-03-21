@@ -302,12 +302,6 @@ function tradesForScenario(scenario: ScenarioRow, trades: TradeRow[]): TradeRow[
   return []
 }
 
-function splitTriggers(triggers: string | null | undefined): string[] {
-  return (triggers || '')
-    .split(/,\s*/)
-    .map(item => item.trim())
-    .filter(Boolean)
-}
 
 // --- Playbook Tab ---
 
@@ -362,7 +356,6 @@ function PlaybookTab() {
       {sortedScenarios.map((s, i) => {
         const scenarioTrades = tradesForScenario(s, activeTrades)
         const probabilityColor = probColor(s.probability)
-        const triggerItems = splitTriggers(s.triggers)
 
         return (
           <section
@@ -479,14 +472,6 @@ function PlaybookTab() {
                 </div>
               )}
 
-              {triggerItems.length > 0 && (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <div style={labelStyle}>Watch</div>
-                  <div style={{ color: C.secondary, fontSize: 'var(--fs-sm)', lineHeight: 1.6 }}>
-                    {triggerItems.join(' \u00b7 ')}
-                  </div>
-                </div>
-              )}
             </div>
           </section>
         )
