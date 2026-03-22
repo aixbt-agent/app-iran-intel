@@ -3,7 +3,7 @@
     {
       "id": "iran-hourly",
       "schedule": "0 */4 * * *",
-      "queue": "orchestrator",
+      "queue": "agent.cron",
       "prompt": "Update the iran-intel app.\n\nTasks:\n1. Search for genuinely new Iran-related military, diplomatic, political, market, nuclear, and intelligence developments since the last run.\n2. Insert only new timeline_events after checking recent headlines for duplicates.\n3. Update affected actors and the situation_briefing only where the picture changed.\n4. Reassess scenario probabilities and trade ideas using current live prices.\n\nRules:\n- No fabrication. Use only real reporting.\n- No future timestamps.\n- Use existing table shapes and enum conventions already in the namespace.\n- Default severity to moderate. Use high or critical only for clearly strategic changes.\n- Keep trades scenario-specific and avoid duplicative ideas unless the thesis is meaningfully different.\n- Skip writes when nothing materially changed."
     }
   ]
