@@ -270,12 +270,14 @@ function MapTab({ actors }: { actors: ActorRow[] | null }) {
 
 // --- Tab content components ---
 
+const TIMELINE_INITIAL = 75
 const TIMELINE_PAGE = 25
 
 function TimelineTab({ briefing, scrollRef }: { briefing: BriefingRow | null; scrollRef?: React.RefObject<HTMLDivElement | null> }) {
   const [events, setEvents] = useState<Array<{ id: number; time: string; category: string; headline: string; details: string; important: boolean }>>([])
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
+  const [loadCount, setLoadCount] = useState(0)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const offsetRef = useRef(0)
   const fetchingRef = useRef(false)
@@ -284,11 +286,12 @@ function TimelineTab({ briefing, scrollRef }: { briefing: BriefingRow | null; sc
     if (fetchingRef.current || !hasMore) return
     fetchingRef.current = true
     try {
-      const res = await fetch(`/api/data/timeline_events?limit=${TIMELINE_PAGE}&offset=${offsetRef.current}&order_by=event_time&order=desc`)
+      const pageSize = offsetRef.current === 0 ? TIMELINE_INITIAL : TIMELINE_PAGE
+      const res = await fetch(`/api/data/timeline_events?limit=${pageSize}&offset=${offsetRef.current}&order_by=event_time&order=desc`)
       if (!res.ok) return
       const json = await res.json()
       const rows: TimelineEvent[] = json.rows || json
-      if (rows.length < TIMELINE_PAGE) setHasMore(false)
+      if (rows.length < pageSize) setHasMore(false)
       offsetRef.current += rows.length
       setEvents(prev => [...prev, ...rows.map(e => ({
         id: e.id,
@@ -301,6 +304,7 @@ function TimelineTab({ briefing, scrollRef }: { briefing: BriefingRow | null; sc
     } finally {
       fetchingRef.current = false
       setLoading(false)
+      setLoadCount(c => c + 1)
     }
   }, [hasMore])
 
@@ -314,7 +318,7 @@ function TimelineTab({ briefing, scrollRef }: { briefing: BriefingRow | null; sc
     }, { root: scrollRef?.current ?? null, rootMargin: '300px' })
     obs.observe(el)
     return () => obs.disconnect()
-  }, [hasMore, loadMore, scrollRef])
+  }, [loadCount, hasMore, loadMore, scrollRef])
 
   return (
     <div>
