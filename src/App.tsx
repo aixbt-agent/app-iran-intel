@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { PillBar, PillButton, SkeletonBar, TabBar, Timeline } from '@aixbt-agent/components'
 import { useFetch } from './lib/useFetch'
 import {  StrategicMap, type StrategicMapLocation, type StrategicMapRoute  } from '@aixbt-agent/components'
@@ -270,20 +270,57 @@ function MapTab({ actors }: { actors: ActorRow[] | null }) {
 
 // --- Tab content components ---
 
-function TimelineTab({ briefing }: { briefing: BriefingRow | null }) {
-  const { data } = useFetch<TimelineEvent[]>('/api/data/timeline_events?limit=500&order_by=event_time&order=desc')
+const TIMELINE_PAGE = 25
 
-  const events = (data || []).map(e => ({
-    id: e.id,
-    time: e.event_time,
-    category: e.category,
-    headline: e.headline,
-    details: e.details,
-    important: e.severity === 'high' || e.severity === 'critical',
-  }))
+function TimelineTab({ briefing }: { briefing: BriefingRow | null }) {
+  const [events, setEvents] = useState<Array<{ id: number; time: string; category: string; headline: string; details: string; important: boolean }>>([])
+  const [loading, setLoading] = useState(true)
+  const [hasMore, setHasMore] = useState(true)
+  const sentinelRef = useRef<HTMLDivElement>(null)
+  const offsetRef = useRef(0)
+  const fetchingRef = useRef(false)
+
+  const loadMore = useCallback(async () => {
+    if (fetchingRef.current || !hasMore) return
+    fetchingRef.current = true
+    try {
+      const res = await fetch(`/api/data/timeline_events?limit=${TIMELINE_PAGE}&offset=${offsetRef.current}&order_by=event_time&order=desc`)
+      if (!res.ok) return
+      const json = await res.json()
+      const rows: TimelineEvent[] = json.rows || json
+      if (rows.length < TIMELINE_PAGE) setHasMore(false)
+      offsetRef.current += rows.length
+      setEvents(prev => [...prev, ...rows.map(e => ({
+        id: e.id,
+        time: e.event_time,
+        category: e.category,
+        headline: e.headline,
+        details: e.details,
+        important: e.severity === 'high' || e.severity === 'critical',
+      }))])
+    } finally {
+      fetchingRef.current = false
+      setLoading(false)
+    }
+  }, [hasMore])
+
+  useEffect(() => { loadMore() }, [])
+
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el || !hasMore) return
+    const obs = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) loadMore()
+    }, { rootMargin: '300px' })
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [hasMore, loadMore])
 
   return (
-    <Timeline events={events} loading={!data?.length} />
+    <div>
+      <Timeline events={events} loading={loading && events.length === 0} />
+      <div ref={sentinelRef} style={{ height: 1 }} />
+    </div>
   )
 }
 
