@@ -272,7 +272,7 @@ function MapTab({ actors }: { actors: ActorRow[] | null }) {
 
 const TIMELINE_PAGE = 25
 
-function TimelineTab({ briefing }: { briefing: BriefingRow | null }) {
+function TimelineTab({ briefing, scrollRef }: { briefing: BriefingRow | null; scrollRef?: React.RefObject<HTMLDivElement | null> }) {
   const [events, setEvents] = useState<Array<{ id: number; time: string; category: string; headline: string; details: string; important: boolean }>>([])
   const [loading, setLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
@@ -311,10 +311,10 @@ function TimelineTab({ briefing }: { briefing: BriefingRow | null }) {
     if (!el || !hasMore) return
     const obs = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) loadMore()
-    }, { rootMargin: '300px' })
+    }, { root: scrollRef?.current ?? null, rootMargin: '300px' })
     obs.observe(el)
     return () => obs.disconnect()
-  }, [hasMore, loadMore])
+  }, [hasMore, loadMore, scrollRef])
 
   return (
     <div>
@@ -534,6 +534,7 @@ export default function App() {
   const isMobile = useIsMobile()
 
   const briefing = briefingData?.[0] || null
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   return (
     <div style={{ width: '100vw', height: '100vh', overflow: 'hidden', fontFamily: font, background: C.bg, display: 'flex', flexDirection: 'column' }}>
@@ -549,7 +550,7 @@ export default function App() {
         )}
 
         {activeTab !== 'globe' && (
-          <div style={{
+          <div ref={scrollContainerRef} style={{
             position: 'absolute', inset: 0, overflowY: 'auto',
             display: 'flex', justifyContent: 'center', background: C.bg,
           }}>
@@ -558,7 +559,7 @@ export default function App() {
               maxWidth: 900,
               padding: isMobile ? '16px 12px' : '24px 32px',
             }}>
-              {activeTab === 'timeline' && <TimelineTab briefing={briefing} />}
+              {activeTab === 'timeline' && <TimelineTab briefing={briefing} scrollRef={scrollContainerRef} />}
               {activeTab === 'playbook' && <PlaybookTab />}
             </div>
           </div>
